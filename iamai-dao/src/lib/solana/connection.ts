@@ -1,0 +1,49 @@
+import { Connection, clusterApiUrl } from '@solana/web3.js';
+
+// Solana network configuration
+export const NETWORK = process.env.NEXT_PUBLIC_SOLANA_NETWORK || 'devnet';
+export const RPC_ENDPOINT = process.env.NEXT_PUBLIC_RPC_ENDPOINT || clusterApiUrl(NETWORK as any);
+
+// Create connection instance
+export const connection = new Connection(RPC_ENDPOINT, 'confirmed');
+
+// Program IDs (to be updated with actual deployed program IDs)
+export const PROGRAM_IDS = {
+  TOKEN: process.env.NEXT_PUBLIC_TOKEN_PROGRAM_ID || '',
+  STAKING: process.env.NEXT_PUBLIC_STAKING_PROGRAM_ID || '',
+  GOVERNANCE: process.env.NEXT_PUBLIC_GOVERNANCE_PROGRAM_ID || '',
+  MARKETPLACE: process.env.NEXT_PUBLIC_MARKETPLACE_PROGRAM_ID || '',
+};
+
+// Token configuration
+export const IAMAI_TOKEN_CONFIG = {
+  name: 'IAMAI',
+  symbol: 'IAMAI',
+  decimals: 9,
+  totalSupply: 1_000_000_000,
+  mintAddress: process.env.NEXT_PUBLIC_IAMAI_MINT_ADDRESS || '',
+};
+
+// Staking configuration
+export const STAKING_CONFIG = {
+  tiers: [
+    { duration: 30, apy: 5 },
+    { duration: 60, apy: 8 },
+    { duration: 90, apy: 12 },
+    { duration: 180, apy: 20 },
+  ],
+  earlyUnstakePenalty: 0.1, // 10%
+};
+
+// Governance configuration
+export const GOVERNANCE_CONFIG = {
+  minTokensForProposal: 10_000,
+  quorumPercentage: 10,
+  executionDelay: 48 * 60 * 60 * 1000, // 48 hours in milliseconds
+};
+
+// Marketplace configuration
+export const MARKETPLACE_CONFIG = {
+  royaltyPercentage: 5, // 5% to original creator
+  transferFeePercentage: 0.1, // 0.1% to treasury
+};
