@@ -17,11 +17,10 @@ export const PROGRAM_IDS = {
 
 // Token configuration
 export const IAMAI_TOKEN_CONFIG = {
-  name: 'IAMAI',
-  symbol: 'IAMAI',
+  mintAddress: process.env.NEXT_PUBLIC_IAMAI_MINT_ADDRESS || 'AjqyWaLD1PNh9SfsF5RbsYbvSWdLBxYV7zBT2PWSJHJN',
   decimals: 9,
-  totalSupply: 1_000_000_000,
-  mintAddress: process.env.NEXT_PUBLIC_IAMAI_MINT_ADDRESS || '5ieP1Z14NwuJpWeanJWXLKBENwNzqMvXkwdLEC5kpfbu',
+  symbol: 'IAMAI',
+  name: 'IAMAI Token'
 };
 
 // Staking configuration

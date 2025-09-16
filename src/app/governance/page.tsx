@@ -3,13 +3,14 @@
 import React, { useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Navigation } from '@/components/Navigation';
+import { useGovernanceData } from '@/hooks/useGovernanceData';
 import { 
   Vote, 
+  Users, 
   Clock, 
+  TrendingUp, 
   CheckCircle, 
   XCircle, 
-  Users, 
-  TrendingUp,
   Plus,
   Calendar,
   Wallet
@@ -30,66 +31,20 @@ interface Proposal {
 
 const Governance: React.FC = () => {
   const { publicKey, connected } = useWallet();
-  const [selectedTab, setSelectedTab] = useState<'active' | 'completed'>('active');
-
-  const proposals: Proposal[] = [
-    {
-      id: 1,
-      title: 'Increase Staking Rewards to 15% APY',
-      description: 'Proposal to increase the annual percentage yield for IAMAI token staking from 12% to 15% to incentivize more participation in the ecosystem.',
-      proposer: '9uN3Vw5D...uEHcnT',
-      status: 'active',
-      votesFor: 1250,
-      votesAgainst: 340,
-      totalVotes: 1590,
-      endDate: '2024-01-20',
-      category: 'Economic'
-    },
-    {
-      id: 2,
-      title: 'Add New AI Model Categories',
-      description: 'Expand the marketplace to include computer vision and natural language processing model categories.',
-      proposer: 'F2iupsNm...Cw72z2',
-      status: 'active',
-      votesFor: 890,
-      votesAgainst: 120,
-      totalVotes: 1010,
-      endDate: '2024-01-18',
-      category: 'Platform'
-    },
-    {
-      id: 3,
-      title: 'Treasury Allocation for Marketing',
-      description: 'Allocate 100,000 IAMAI tokens from the treasury for marketing and community growth initiatives.',
-      proposer: 'HwSjU2Qu...TWfHg',
-      status: 'passed',
-      votesFor: 2100,
-      votesAgainst: 450,
-      totalVotes: 2550,
-      endDate: '2024-01-10',
-      category: 'Treasury'
-    },
-    {
-      id: 4,
-      title: 'Implement Fee Reduction',
-      description: 'Reduce marketplace transaction fees from 2.5% to 1.5% to encourage more trading activity.',
-      proposer: 'HDLPuNmV...WDWYiH',
-      status: 'rejected',
-      votesFor: 780,
-      votesAgainst: 1420,
-      totalVotes: 2200,
-      endDate: '2024-01-05',
-      category: 'Economic'
-    }
-  ];
+  const [activeTab, setActiveTab] = useState<'active' | 'completed'>('active');
+  const { proposals, loading, votingPower, vote } = useGovernanceData();
 
   const activeProposals = proposals.filter(p => p.status === 'active');
-  const completedProposals = proposals.filter(p => p.status === 'passed' || p.status === 'rejected');
+  const completedProposals = proposals.filter(p => p.status !== 'active');
 
-  const handleVote = (proposalId: number, voteType: 'for' | 'against') => {
-    if (!connected) return;
-    // Implementation would interact with governance smart contract
-    console.log(`Voting ${voteType} on proposal ${proposalId}`);
+  const handleVote = async (proposalId: number, voteType: 'for' | 'against') => {
+    try {
+      await vote(proposalId, voteType);
+      // Success feedback could be added here
+    } catch (error) {
+      console.error('Voting failed:', error);
+      // Error feedback could be added here
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -181,9 +136,9 @@ const Governance: React.FC = () => {
         {/* Tabs */}
         <div className="flex space-x-1 mb-6">
           <button
-            onClick={() => setSelectedTab('active')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-              selectedTab === 'active'
+            onClick={() => setActiveTab('active')}
+            className={`px-6 py-3 rounded-lg font-medium transition-colors ${
+              activeTab === 'active'
                 ? 'bg-purple-600 text-white'
                 : 'text-gray-400 hover:text-white hover:bg-gray-800'
             }`}
@@ -191,9 +146,9 @@ const Governance: React.FC = () => {
             Active Proposals ({activeProposals.length})
           </button>
           <button
-            onClick={() => setSelectedTab('completed')}
+            onClick={() => setActiveTab('completed')}
             className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-              selectedTab === 'completed'
+              activeTab === 'completed'
                 ? 'bg-purple-600 text-white'
                 : 'text-gray-400 hover:text-white hover:bg-gray-800'
             }`}
@@ -211,8 +166,8 @@ const Governance: React.FC = () => {
         </div>
 
         {/* Proposals List */}
-        <div className="space-y-6">
-          {(selectedTab === 'active' ? activeProposals : completedProposals).map((proposal) => {
+        <div className="space-y-4">
+          {(activeTab === 'active' ? activeProposals : completedProposals).map((proposal) => {
             const StatusIcon = getStatusIcon(proposal.status);
             const votePercentage = proposal.totalVotes > 0 ? (proposal.votesFor / proposal.totalVotes) * 100 : 0;
 

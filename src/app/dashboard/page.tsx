@@ -4,20 +4,28 @@ import React from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Navigation } from '@/components/Navigation';
 import { useToken } from '@/hooks/useToken';
+import { useStakingData } from '@/hooks/useStakingData';
+import { useGovernanceData } from '@/hooks/useGovernanceData';
 import { 
   Wallet, 
   TrendingUp, 
-  DollarSign, 
   Users, 
-  BarChart3,
-  Activity,
+  Award, 
+  ArrowUpRight, 
+  ArrowDownRight,
+  Clock,
+  DollarSign,
   Coins,
-  Vote
+  Vote,
+  BarChart3,
+  Activity
 } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
   const { publicKey, connected } = useWallet();
   const { tokenBalance, loading } = useToken();
+  const { totalStaked, totalRewards, positions } = useStakingData();
+  const { votingPower } = useGovernanceData();
 
   const stats = [
     {
@@ -28,24 +36,24 @@ const Dashboard: React.FC = () => {
       changeType: 'positive' as const,
     },
     {
-      title: 'SOL Balance',
-      value: '2.45 SOL',
-      icon: DollarSign,
-      change: '+5.2%',
+      title: 'Staked Amount',
+      value: `${totalStaked.toLocaleString()} IAMAI`,
+      icon: TrendingUp,
+      change: '+8.2%',
       changeType: 'positive' as const,
     },
     {
       title: 'Staking Rewards',
-      value: '156.78 IAMAI',
-      icon: TrendingUp,
-      change: '+8.1%',
+      value: `${totalRewards.toLocaleString()} IAMAI`,
+      icon: Award,
+      change: '+15.3%',
       changeType: 'positive' as const,
     },
     {
       title: 'Governance Power',
-      value: '1,250 Votes',
+      value: `${votingPower.toLocaleString()} VP`,
       icon: Vote,
-      change: '+2.3%',
+      change: '+5.1%',
       changeType: 'positive' as const,
     },
   ];
