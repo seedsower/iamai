@@ -1,15 +1,9 @@
 [build]
-  publish = ".next"
+  publish = "out"
   command = "npm run build"
 
 [build.environment]
   NODE_VERSION = "18"
-  NPM_FLAGS = "--prefix=/dev/null"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
 
 [context.production.environment]
   NEXT_PUBLIC_SOLANA_NETWORK = "devnet"
