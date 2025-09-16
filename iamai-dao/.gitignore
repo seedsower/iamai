@@ -53,3 +53,7 @@ next-env.d.ts
 !package.json
 !package-lock.json
 !tsconfig.json
+
+# Build output (but allow checking for debugging)
+/out/
+!out/index.html

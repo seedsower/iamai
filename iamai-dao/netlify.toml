@@ -1,9 +1,11 @@
 [build]
-  publish = "out"
   command = "npm run build"
 
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "20"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 [context.production.environment]
   NEXT_PUBLIC_SOLANA_NETWORK = "devnet"
