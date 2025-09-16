@@ -1,6 +1,5 @@
 [build]
   base = "iamai-dao"
-  publish = "iamai-dao/.next"
   command = "npm run build"
 
 [build.environment]
