@@ -4,7 +4,7 @@ import "./globals.css";
 import '@solana/wallet-adapter-react-ui/styles.css';
 import { WalletContextProvider } from "@/components/wallet/WalletProvider";
 import { Toaster } from "react-hot-toast";
-import { setupErrorHandling } from "@/lib/errorHandler";
+import { ErrorSuppressor } from "@/components/ErrorSuppressor";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,15 +28,67 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Setup error handling on client side
-  if (typeof window !== 'undefined') {
-    setupErrorHandling();
-  }
-
   return (
     <html lang="en" className="dark">
       <body className={`${inter.variable} font-sans antialiased bg-gray-900 text-white`}>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Setup error handling immediately
+              (function() {
+                let errorHandlerSetup = false;
+                if (errorHandlerSetup) return;
+                errorHandlerSetup = true;
+
+                const originalConsoleError = console.error;
+                console.error = function(...args) {
+                  const filteredArgs = args.filter(arg => {
+                    if (typeof arg === 'object' && arg !== null) {
+                      const keys = Object.keys(arg);
+                      if (keys.length === 0) return false;
+                      
+                      const hasContent = keys.some(key => {
+                        const value = arg[key];
+                        return value !== undefined && value !== null && value !== '';
+                      });
+                      
+                      return hasContent;
+                    }
+                    return true;
+                  });
+                  
+                  if (filteredArgs.length > 0) {
+                    originalConsoleError.apply(console, filteredArgs);
+                  }
+                };
+
+                const originalConsoleWarn = console.warn;
+                console.warn = function(...args) {
+                  const filteredArgs = args.filter(arg => {
+                    if (typeof arg === 'object' && arg !== null) {
+                      const keys = Object.keys(arg);
+                      if (keys.length === 0) return false;
+                      
+                      const hasContent = keys.some(key => {
+                        const value = arg[key];
+                        return value !== undefined && value !== null && value !== '';
+                      });
+                      
+                      return hasContent;
+                    }
+                    return true;
+                  });
+                  
+                  if (filteredArgs.length > 0) {
+                    originalConsoleWarn.apply(console, filteredArgs);
+                  }
+                };
+              })();
+            `,
+          }}
+        />
         <WalletContextProvider>
+          <ErrorSuppressor />
           {children}
           <Toaster
             position="top-right"
