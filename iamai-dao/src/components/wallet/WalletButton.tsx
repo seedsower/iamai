@@ -1,16 +1,28 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { Wallet, LogOut } from 'lucide-react';
 
 export const WalletButton: React.FC = () => {
   const { wallet, publicKey, disconnect } = useWallet();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleDisconnect = () => {
     disconnect();
   };
+
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!mounted) {
+    return (
+      <div className="h-10 w-32 bg-gray-200 animate-pulse rounded-lg"></div>
+    );
+  }
 
   if (publicKey) {
     return (

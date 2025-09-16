@@ -39,3 +39,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Rust/Anchor build artifacts
+/target/
+*.so
+*.d
+*.rlib
+*.rmeta
+
+# Solana keypairs (keep secure)
+*-keypair.json
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json

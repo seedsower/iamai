@@ -1,4 +1,4 @@
-import { Connection, clusterApiUrl } from '@solana/web3.js';
+import { Connection, clusterApiUrl, PublicKey } from '@solana/web3.js';
 
 // Solana network configuration
 export const NETWORK = process.env.NEXT_PUBLIC_SOLANA_NETWORK || 'devnet';
@@ -7,12 +7,12 @@ export const RPC_ENDPOINT = process.env.NEXT_PUBLIC_RPC_ENDPOINT || clusterApiUr
 // Create connection instance
 export const connection = new Connection(RPC_ENDPOINT, 'confirmed');
 
-// Program IDs (to be updated with actual deployed program IDs)
+// Program IDs (updated with generated program IDs)
 export const PROGRAM_IDS = {
-  TOKEN: process.env.NEXT_PUBLIC_TOKEN_PROGRAM_ID || '',
-  STAKING: process.env.NEXT_PUBLIC_STAKING_PROGRAM_ID || '',
-  GOVERNANCE: process.env.NEXT_PUBLIC_GOVERNANCE_PROGRAM_ID || '',
-  MARKETPLACE: process.env.NEXT_PUBLIC_MARKETPLACE_PROGRAM_ID || '',
+  token: new PublicKey('F2iupsNmgY69NwD6a1ZETMhPPET8WLojYKDBbVCw72z2'),
+  staking: new PublicKey('HwSjU2QuDJjU7oLwrzue5RZ5Zcs1HHJPYbZFXGPTWfHg'),
+  governance: new PublicKey('HDLPuNmVXrVYCihhBqMshnQEfxXwugY6WCo9rWDWY4iH'),
+  marketplace: new PublicKey('3ASqWgGno8sQsmkihwkocjAk8gnscGoHzhLozZouPJEU'),
 };
 
 // Token configuration
@@ -21,7 +21,7 @@ export const IAMAI_TOKEN_CONFIG = {
   symbol: 'IAMAI',
   decimals: 9,
   totalSupply: 1_000_000_000,
-  mintAddress: process.env.NEXT_PUBLIC_IAMAI_MINT_ADDRESS || '',
+  mintAddress: process.env.NEXT_PUBLIC_IAMAI_MINT_ADDRESS || '5ieP1Z14NwuJpWeanJWXLKBENwNzqMvXkwdLEC5kpfbu',
 };
 
 // Staking configuration
