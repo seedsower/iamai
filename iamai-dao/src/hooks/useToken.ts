@@ -18,10 +18,20 @@ export function useToken() {
 
   // Fetch IAMAI token balance
   const fetchTokenBalance = useCallback(async () => {
-    if (!publicKey || !IAMAI_TOKEN_CONFIG.mintAddress) return;
+    if (!publicKey || !IAMAI_TOKEN_CONFIG.mintAddress) {
+      setTokenBalance(0);
+      return;
+    }
 
     try {
       setLoading(true);
+      // Validate mint address is a valid base58 string
+      if (IAMAI_TOKEN_CONFIG.mintAddress.length === 0) {
+        console.warn('IAMAI mint address not configured');
+        setTokenBalance(0);
+        return;
+      }
+
       const mintPublicKey = new PublicKey(IAMAI_TOKEN_CONFIG.mintAddress);
       const tokenAccount = await getAssociatedTokenAddress(
         mintPublicKey,
@@ -32,7 +42,10 @@ export function useToken() {
       const balance = Number(accountInfo.amount) / Math.pow(10, IAMAI_TOKEN_CONFIG.decimals);
       setTokenBalance(balance);
     } catch (error) {
-      console.error('Error fetching token balance:', error);
+      // Only log meaningful errors, not empty objects
+      if (error && (error as any).message) {
+        console.error('Error fetching token balance:', (error as any).message);
+      }
       setTokenBalance(0);
     } finally {
       setLoading(false);
@@ -68,7 +81,9 @@ export function useToken() {
       await fetchTokenBalance(); // Refresh balance
       return result;
     } catch (error) {
-      console.error('Purchase error:', error);
+      if (error && (error as any).message) {
+        console.error('Purchase error:', (error as any).message);
+      }
       throw error;
     } finally {
       setLoading(false);
@@ -79,6 +94,10 @@ export function useToken() {
   const transferTokens = useCallback(async (to: PublicKey, amount: number) => {
     if (!publicKey || !signTransaction) {
       throw new Error('Wallet not connected');
+    }
+
+    if (!IAMAI_TOKEN_CONFIG.mintAddress || IAMAI_TOKEN_CONFIG.mintAddress.length === 0) {
+      throw new Error('IAMAI mint address not configured');
     }
 
     try {
@@ -133,7 +152,9 @@ export function useToken() {
       
       return signature;
     } catch (error) {
-      console.error('Transfer error:', error);
+      if (error && (error as any).message) {
+        console.error('Transfer error:', (error as any).message);
+      }
       throw error;
     } finally {
       setLoading(false);

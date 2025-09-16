@@ -4,6 +4,7 @@ import "./globals.css";
 import '@solana/wallet-adapter-react-ui/styles.css';
 import { WalletContextProvider } from "@/components/wallet/WalletProvider";
 import { Toaster } from "react-hot-toast";
+import { setupErrorHandling } from "@/lib/errorHandler";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,6 +28,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Setup error handling on client side
+  if (typeof window !== 'undefined') {
+    setupErrorHandling();
+  }
+
   return (
     <html lang="en" className="dark">
       <body className={`${inter.variable} font-sans antialiased bg-gray-900 text-white`}>
