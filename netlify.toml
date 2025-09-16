@@ -1,7 +1,7 @@
 [build]
   base = "iamai-dao"
-  publish = "iamai-dao/out"
-  command = "cd iamai-dao && npm run build"
+  publish = "iamai-dao/.next"
+  command = "npm run build"
 
 [build.environment]
   NODE_VERSION = "20"
